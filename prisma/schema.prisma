@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "postgres"
     url      = env("DATABASE_URL")
 }
 
@@ -15,3 +15,24 @@ model Example {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
+
+model Business{
+    id String @id @default(cuid())
+    name String
+    location String
+    reviews Review[]
+    createdAt DateTime @default(now())
+}
+
+model Review{
+    id String @id @default(cuid())
+    title String
+    details String
+    businessId String
+    business Business @relation(references: [id],fields: [businessId])
+    createdAt DateTime @default(now())
+}
+
+
+
+
