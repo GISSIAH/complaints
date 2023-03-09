@@ -25,7 +25,7 @@ export default Home;
 
 function LatestReviews() {
   const { data, isLoading } = api.review.getRecent.useQuery();
-
+  //testing testt
   if (isLoading) {
     return <p className="font-light text-gray-700">Loading recents...</p>;
   }
