@@ -4,6 +4,7 @@ import { NextPage } from "next";
 import { useFormik } from "formik";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
+import { Business } from "@prisma/client";
 interface AddReviewProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -13,7 +14,8 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
   function closeModal() {
     setIsOpen(false);
   }
-  const router = useRouter()
+  const router = useRouter();
+  const [bname, setBName] = useState("")
   const reviewMutation = api.review.createOne.useMutation();
   const formik = useFormik({
     initialValues: {
@@ -26,7 +28,7 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
         .mutateAsync(values)
         .then((res) => {
           closeModal();
-          router.reload()
+          router.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -78,7 +80,7 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
                         placeholder="Misplaced order"
                       />
                     </div>
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                       <label htmlFor="name">Name of Business</label>
                       <input
                         type="text"
@@ -87,8 +89,8 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
                         placeholder="AMC Holdings"
                       />
-                    </div>
-
+                    </div> */}
+                    <AutoCompleteField bname={bname} setBName={setBName} />
                     <div className="flex flex-col">
                       <label htmlFor="name">Review</label>
                       <textarea
@@ -118,3 +120,54 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
 };
 
 export default AddReview;
+
+const AutoCompleteField: NextPage<{
+  bname: string;
+  setBName: Dispatch<SetStateAction<string>>;
+}> = ({ bname, setBName }) => {
+  const { data, isLoading } = api.business.getAll.useQuery();
+  const [autoOpen, setAutoOpen] = useState(false);
+  const [matches, setMatches] = useState<Business[] | undefined>();
+
+  if (isLoading) return <p>Loading...</p>;
+  return (
+    <div className="flex flex-col">
+      <label htmlFor="name">Name of Business</label>
+      <input
+        type="text"
+        id="businessNme"
+        value={bname}
+        onChange={(e) => {
+          setBName(e.target.value);
+          if (e.target.value.length > 1) {
+            setAutoOpen(true);
+          } else {
+            setAutoOpen(false);
+          }
+          const regex = new RegExp(bname, "i");
+          const matchingOptions = data?.filter((option) =>
+            regex.test(option.name)
+          );
+          setMatches(matchingOptions);
+        }}
+        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
+        placeholder="AMC Holdings"
+      />
+      {autoOpen ? (
+        <ul className="rounded-sm bg-gray-50 px-2 py-1 shadow-md">
+          {matches?.map((match, i) => (
+            <p
+              key={i}
+              onClick={() => {
+                setBName(match.name);
+                setAutoOpen(false);
+              }}
+            >
+              {match.name}
+            </p>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+};

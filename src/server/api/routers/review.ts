@@ -45,6 +45,6 @@ export const reviewRouter = createTRPCRouter({
     return ctx.prisma.review.findMany();
   }),
   getRecent: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.review.findMany({orderBy:{createdAt:"desc"},take:15})
+    return ctx.prisma.review.findMany({orderBy:{createdAt:"desc"},take:15,include:{business:true}})
   })
 });

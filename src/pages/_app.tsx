@@ -54,7 +54,7 @@ const Layout: NextPage<LayoutProps> = ({ children }) => {
           />
         </svg>
       </div>
-      <div className="fixed bottom-0 left-0 z-50 h-10 w-full border-t border-gray-200 bg-white py-1">
+      <div className="fixed bottom-0 left-0 z-50 h-12 w-full border-t border-gray-200 bg-white py-2">
         <div className="flex justify-between gap-2 px-6">
           <div className="flex flex-col">
             <Link href="/">
