@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Dialog, Transition } from "@headlessui/react";
-import { useState, Dispatch, SetStateAction, Fragment } from "react";
+import { useState, Dispatch, SetStateAction, Fragment, useRef } from "react";
 import { NextPage } from "next";
 import { useFormik } from "formik";
 import { api } from "~/utils/api";
@@ -14,8 +15,13 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
   function closeModal() {
     setIsOpen(false);
   }
+  const [imgSelected, setImgSelected] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<
+    { url: string; name: string }[]
+  >([]);
+  const imageRef = useRef();
   const router = useRouter();
-  const [bname, setBName] = useState("")
+  const [bname, setBName] = useState("");
   const reviewMutation = api.review.createOne.useMutation();
   const formik = useFormik({
     initialValues: {
@@ -24,6 +30,7 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
       businessNme: "",
     },
     onSubmit: (values) => {
+      values.businessNme = bname;
       reviewMutation
         .mutateAsync(values)
         .then((res) => {
@@ -99,6 +106,77 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
                       ></textarea>
                     </div>
+                    <div className="flex h-28 w-full items-center justify-center rounded-sm border border-gray-200 px-2 py-1 bg-gray-50">
+                      {imgSelected && selectedImages ? (
+                        <div className="flex flex-col gap-2">
+                          <div className="grid grid-cols-3 gap-2">
+                            {selectedImages.map((img, i) => {
+                              return (
+                                <img
+                                  key={i}
+                                  src={img.url}
+                                  className="h-10 w-10"
+                                />
+                              );
+                            })}
+                          </div>
+                          <button
+                            className="rounded-md border border-gray-200 px-3"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setImgSelected(false);
+                              setSelectedImages([]);
+                            }}
+                          >
+                            Clear
+                          </button>
+                        </div>
+                      ) : (
+                        <div>
+                          <input
+                            ref={imageRef ? imageRef : null}
+                            type="file"
+                            multiple={true}
+                            className="hidden"
+                            onChange={(e) => {
+                              if (e.target.files) {
+                                for (
+                                  let i = 0;
+                                  i < e.target.files.length;
+                                  i++
+                                ) {
+                                  const f = e.target.files[i];
+                                  if (f) {
+                                    console.log(f);
+                                    const newImgUrl = URL.createObjectURL(f);
+                                    if (selectedImages) {
+                                      selectedImages.push({
+                                        url: newImgUrl,
+                                        name: f.name,
+                                      });
+                                    } else {
+                                      console.log("we cant");
+                                    }
+                                  }
+                                }
+                                //console.log(selectedImages.length);
+                              }
+
+                              setImgSelected(true);
+                            }}
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (imageRef) imageRef.current.click();
+                            }}
+                            className="h-10 rounded-md bg-gray-100 px-3"
+                          >
+                            Upload Images
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="mt-4">
@@ -144,11 +222,27 @@ const AutoCompleteField: NextPage<{
           } else {
             setAutoOpen(false);
           }
-          const regex = new RegExp(bname, "i");
-          const matchingOptions = data?.filter((option) =>
-            regex.test(option.name)
-          );
-          setMatches(matchingOptions);
+          //const regex = new RegExp(bname, "i");
+          if (data) {
+            const startWith = data.filter((business) =>
+              business.name
+                .toLocaleLowerCase()
+                .startsWith(e.target.value.toLocaleLowerCase())
+            );
+
+            const wordsMatch = data.filter((business) =>
+              business.name
+                .toLocaleLowerCase()
+                .includes(e.target.value.toLocaleLowerCase())
+            );
+
+            const allResults = [...startWith, ...wordsMatch];
+
+            const uniqueResults = Array.from(new Set([...allResults]));
+
+            //setMatches(uniqueResults)
+            setMatches(uniqueResults);
+          }
         }}
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
         placeholder="AMC Holdings"
