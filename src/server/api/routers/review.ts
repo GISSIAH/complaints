@@ -54,6 +54,6 @@ export const reviewRouter = createTRPCRouter({
   searchByBusiness : publicProcedure.input(z.object({
     businessName: z.string()
   })).query(({ input,ctx }) => {
-    return ctx.prisma.business.findFirst({where:{name:input.businessName},include:{reviews:true}})
+    return ctx.prisma.business.findFirst({where:{name:input.businessName},include:{reviews:{include:{images:true}}}})
   })
 });

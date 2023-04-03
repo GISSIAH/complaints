@@ -3,9 +3,9 @@ import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
-import { ReactNode, useState } from "react";
+import { type ReactNode, useState } from "react";
 import AddReview from "~/components/addReview";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
 

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Dialog, Transition } from "@headlessui/react";
-import { useState, Dispatch, SetStateAction, Fragment, useRef } from "react";
-import { NextPage } from "next";
+import { useState,type Dispatch, type SetStateAction, Fragment, useRef } from "react";
+import { type NextPage } from "next";
 import { useFormik } from "formik";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
-import { Business } from "@prisma/client";
+import { type Business } from "@prisma/client";
 import storage from "../firebase/firebase.config";
-import { getDownloadURL, ref, uploadBytesResumable, UploadTaskSnapshot } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable, type UploadTaskSnapshot } from "firebase/storage";
 
 interface AddReviewProps {
   isOpen: boolean;
@@ -79,7 +79,7 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
                 router.reload();
               }
             }).catch(err=>{
-              console.log("image failed to save")
+              console.log("image failed to save", err)
             })
           }).catch(err=>{
             console.log(err)

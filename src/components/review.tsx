@@ -1,6 +1,5 @@
-import { type Review, type Business, Image } from "@prisma/client";
+import { type Review, type Business, type Image } from "@prisma/client";
 import { type NextPage } from "next";
-import { useState } from "react";
 interface ReviewProps {
   review: Review & {
     business: Business;
@@ -8,7 +7,6 @@ interface ReviewProps {
 }
 
 const ReviewItem: NextPage<ReviewProps> = ({ review }) => {
-  const [val, setVal] = useState(0);
 
   return (
     <div className="flex-1 items-center gap-5">
