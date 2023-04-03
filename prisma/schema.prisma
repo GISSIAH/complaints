@@ -10,12 +10,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 model Business{
     id String @id @default(cuid())
     name String
@@ -31,6 +25,16 @@ model Review{
     businessId String
     business Business @relation(references: [id],fields: [businessId])
     createdAt DateTime @default(now())
+    images Image[]
+}
+
+model Image{
+    id String @id @default(cuid())
+    name String
+    url String 
+    reviewId String
+    review Review @relation(references: [id], fields: [reviewId])
+
 }
 
 

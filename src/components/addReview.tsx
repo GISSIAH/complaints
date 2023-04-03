@@ -6,6 +6,9 @@ import { useFormik } from "formik";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import { Business } from "@prisma/client";
+import storage from "../firebase/firebase.config";
+import { getDownloadURL, ref, uploadBytesResumable, UploadTaskSnapshot } from "firebase/storage";
+
 interface AddReviewProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -17,12 +20,13 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
   }
   const [imgSelected, setImgSelected] = useState(false);
   const [selectedImages, setSelectedImages] = useState<
-    { url: string; name: string }[]
+    { url: string; name: string; file: File }[]
   >([]);
-  const imageRef = useRef();
+  const imageRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [bname, setBName] = useState("");
   const reviewMutation = api.review.createOne.useMutation();
+  const imageMutation = api.image.addOne.useMutation()
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -34,14 +38,60 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
       reviewMutation
         .mutateAsync(values)
         .then((res) => {
-          closeModal();
-          router.reload();
+          //closeModal();
+          uploadImages(selectedImages,res.id)
+          
         })
         .catch((err) => {
           console.log(err);
         });
     },
   });
+
+  const uploadImages = (images: {name:string,url:string, file:File}[], id: string) => {
+    for (let i = 0; i < images.length; i++) {
+      const file = images[i]?.file;
+      if (!file) return;
+      const storageRef = ref(storage, `/images/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot:UploadTaskSnapshot) => {
+          const percent = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          console.log(`uploading ${i} of ${images.length} at percent ${percent}`);
+        },
+        (err: Error) => console.log(err),
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((url:string) => {
+            if (!id) return;
+            const imageObj = {
+              name: file.name,
+              url: url,
+              reviewId: id,
+            };
+            imageMutation.mutateAsync(imageObj).then(() => {
+              if (i + 1 == images.length) {
+                // setImageUploadDone(true);
+                // setOpen(false);
+                closeModal() 
+                router.reload();
+              }
+            }).catch(err=>{
+              console.log("image failed to save")
+            })
+          }).catch(err=>{
+            console.log(err)
+          })
+        }
+      );
+    }
+  }
+  
+
+
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -106,7 +156,7 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
                       ></textarea>
                     </div>
-                    <div className="flex h-28 w-full items-center justify-center rounded-sm border border-gray-200 px-2 py-1 bg-gray-50">
+                    <div className="flex h-28 w-full items-center justify-center rounded-sm border border-gray-200 bg-gray-50 px-2 py-1">
                       {imgSelected && selectedImages ? (
                         <div className="flex flex-col gap-2">
                           <div className="grid grid-cols-3 gap-2">
@@ -134,7 +184,7 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
                       ) : (
                         <div>
                           <input
-                            ref={imageRef ? imageRef : null}
+                            ref={imageRef}
                             type="file"
                             multiple={true}
                             className="hidden"
@@ -153,13 +203,13 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
                                       selectedImages.push({
                                         url: newImgUrl,
                                         name: f.name,
+                                        file: f,
                                       });
                                     } else {
                                       console.log("we cant");
                                     }
                                   }
                                 }
-                                //console.log(selectedImages.length);
                               }
 
                               setImgSelected(true);
@@ -168,7 +218,7 @@ const AddReview: NextPage<AddReviewProps> = ({ isOpen, setIsOpen }) => {
                           <button
                             onClick={(e) => {
                               e.preventDefault();
-                              if (imageRef) imageRef.current.click();
+                              if (imageRef.current) imageRef.current.click();
                             }}
                             className="h-10 rounded-md bg-gray-100 px-3"
                           >
@@ -265,3 +315,6 @@ const AutoCompleteField: NextPage<{
     </div>
   );
 };
+
+
+

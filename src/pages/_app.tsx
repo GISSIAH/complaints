@@ -76,7 +76,7 @@ const Layout: NextPage<LayoutProps> = ({ children }) => {
               </svg>
             </Link>
           </div>
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <Link href="/charts">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +95,7 @@ const Layout: NextPage<LayoutProps> = ({ children }) => {
                 />
               </svg>
             </Link>
-          </div>
+          </div> */}
           <div className="flex flex-col">
             <Link href="/search">
               <svg

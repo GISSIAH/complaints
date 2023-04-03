@@ -42,9 +42,18 @@ export const reviewRouter = createTRPCRouter({
       }
     }),
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.review.findMany();
+    return ctx.prisma.review.findMany({ include: { images: true } });
   }),
   getRecent: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.review.findMany({orderBy:{createdAt:"desc"},take:15,include:{business:true}})
+    return ctx.prisma.review.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 15,
+      include: { business: true ,images: true},
+    });
+  }),
+  searchByBusiness : publicProcedure.input(z.object({
+    businessName: z.string()
+  })).query(({ input,ctx }) => {
+    return ctx.prisma.business.findFirst({where:{name:input.businessName},include:{reviews:true}})
   })
 });
