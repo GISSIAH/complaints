@@ -11,7 +11,7 @@ export default function Search() {
     businessName: search,
   });
   return (
-    <div className="mt-10 mb-10 flex flex-col p-3">
+    <div className="mt-12 mb-12 flex flex-col p-3">
       <div className="flex w-full items-center gap-3">
         <input
           placeholder="Search by business name"
