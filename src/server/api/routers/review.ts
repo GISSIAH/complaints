@@ -9,6 +9,7 @@ export const reviewRouter = createTRPCRouter({
         title: z.string(),
         details: z.string(),
         businessNme: z.string(),
+        voteCount: z.number(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -48,12 +49,38 @@ export const reviewRouter = createTRPCRouter({
     return ctx.prisma.review.findMany({
       orderBy: { createdAt: "desc" },
       take: 15,
-      include: { business: true ,images: true},
+      include: { business: true, images: true },
     });
   }),
-  searchByBusiness : publicProcedure.input(z.object({
-    businessName: z.string()
-  })).query(({ input,ctx }) => {
-    return ctx.prisma.business.findFirst({where:{name:input.businessName},include:{reviews:{include:{images:true}}}})
-  })
+  searchByBusiness: publicProcedure
+    .input(
+      z.object({
+        businessName: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const business = await ctx.prisma.business.findFirst({
+        where: { name: input.businessName },
+        include: { reviews: { include: { images: true } } },
+      });
+      let totalVotes = 0;
+      business?.reviews.forEach((r) => {
+        totalVotes += r.voteCount;
+      });
+
+      if (business?.reviews) {
+        const ratedBusines = {
+          ...business,
+          rating: totalVotes / business?.reviews.length,
+        };
+        return ratedBusines;
+      }
+      else{
+        const ratedBusines = {
+          ...business,
+          rating: 0,
+        };
+        return ratedBusines;
+      }
+    }),
 });

@@ -1,6 +1,6 @@
 import { type Review } from "@prisma/client";
-import  { useState } from "react";
-import  { ImageContainer, formatDate } from "~/components/review";
+import { useState } from "react";
+import { ImageContainer, formatDate } from "~/components/review";
 import { api } from "~/utils/api";
 
 export default function Search() {
@@ -39,7 +39,12 @@ export default function Search() {
           />
         </svg>
       </div>
-
+      {/* {data != null ? (
+        <div className="flex flex-col">
+          <p className="text-xl font-bold">{data.name}</p>
+          <p className="text-lg text-gray-400">User Rating : {data.rating}</p>
+        </div>
+      ) : null} */}
       {data != null ? (
         <div className="flex flex-col gap-4 divide-y p-2">
           {data?.reviews.map((review, i) => {
@@ -57,7 +62,6 @@ export default function Search() {
                   </div>
                   <p className="text-md font-light">{review.details}</p>
                 </div>
-                
               </div>
             );
           })}

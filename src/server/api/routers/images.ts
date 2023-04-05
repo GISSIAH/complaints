@@ -6,7 +6,7 @@ export const imageRouter = createTRPCRouter({
     addOne: publicProcedure.input(z.object({
         name: z.string(),
         url: z.string(),
-        reviewId: z.string()
+        reviewId: z.string(),
     })).mutation(({input, ctx})=>{ 
         return ctx.prisma.image.create({data:input})
     })

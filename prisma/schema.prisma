@@ -23,6 +23,7 @@ model Review{
     title String
     details String
     businessId String
+    voteCount Int @default(0)
     business Business @relation(references: [id],fields: [businessId])
     createdAt DateTime @default(now())
     images Image[]

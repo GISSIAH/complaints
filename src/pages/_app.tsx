@@ -31,7 +31,7 @@ const Layout: NextPage<LayoutProps> = ({ children }) => {
 };
 
 const NoNav: NextPage<LayoutProps> = ({ children }) => {
-  return <div className="flex min-h-screen flex-col gap-2 ">{children}</div>;
+  return <div className="flex  flex-col gap-2 ">{children}</div>;
 };
 
 const FullNavigation: NextPage<LayoutProps> = ({ children }) => {
