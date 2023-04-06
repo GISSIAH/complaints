@@ -115,6 +115,8 @@ export function formatDate(date: Date) {
       out = `${hours}h`;
     }
   } else {
+
+    
     out = `${minutes}m`;
   }
   return out;

@@ -36,16 +36,20 @@ export default function AddReview() {
       title: "",
       details: "",
       businessNme: "",
-      voteCount:0
+      voteCount: 0,
     },
     onSubmit: (values) => {
       values.businessNme = bname;
-      values.voteCount = voteCount
+      values.voteCount = voteCount;
       reviewMutation
         .mutateAsync(values)
         .then((res) => {
           //closeModal();
-          uploadImages(selectedImages, res.id);
+          if (selectedImages.length > 0) {
+            uploadImages(selectedImages, res.id);
+          }else{
+            router.push("/")
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -84,11 +88,11 @@ export default function AddReview() {
               };
               imageMutation
                 .mutateAsync(imageObj)
-                .then(async () => {
+                .then(() => {
                   if (i + 1 == images.length) {
                     // setImageUploadDone(true);
                     // setOpen(false);
-                    await router.push("/");
+                    router.push("/");
                   }
                 })
                 .catch((err) => {
