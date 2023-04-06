@@ -1,4 +1,3 @@
-import { type Review } from "@prisma/client";
 import { useState } from "react";
 import { ImageContainer, formatDate } from "~/components/review";
 import { api } from "~/utils/api";
@@ -7,7 +6,7 @@ export default function Search() {
   const [search, setSearch] = useState("");
   const [fieldValue, setFieldValue] = useState("");
 
-  const { data, isLoading, refetch } = api.review.searchByBusiness.useQuery({
+  const { data, } = api.review.searchByBusiness.useQuery({
     businessName: search,
   });
   return (
