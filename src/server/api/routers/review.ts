@@ -24,6 +24,7 @@ export const reviewRouter = createTRPCRouter({
           title: input.title,
           details: input.details,
           businessId: business.id,
+          voteCount: input.voteCount
         };
         return ctx.prisma.review.create({ data: r });
       } else {
@@ -38,6 +39,7 @@ export const reviewRouter = createTRPCRouter({
           title: input.title,
           details: input.details,
           businessId: newBusiness.id,
+          voteCount : input.voteCount
         };
         return ctx.prisma.review.create({ data: r });
       }

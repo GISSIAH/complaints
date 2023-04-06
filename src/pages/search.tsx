@@ -6,7 +6,7 @@ export default function Search() {
   const [search, setSearch] = useState("");
   const [fieldValue, setFieldValue] = useState("");
 
-  const { data, } = api.review.searchByBusiness.useQuery({
+  const { data } = api.review.searchByBusiness.useQuery({
     businessName: search,
   });
   return (
@@ -38,32 +38,33 @@ export default function Search() {
           />
         </svg>
       </div>
-      {/* {data != null ? (
-        <div className="flex flex-col">
+      {data?.id != null ? (
+        <div className="flex flex-col p-2">
           <p className="text-xl font-bold">{data.name}</p>
           <p className="text-lg text-gray-400">User Rating : {data.rating}</p>
         </div>
-      ) : null} */}
+      ) : null}
       {data?.id != null ? (
         <div className="flex flex-col gap-4 divide-y p-2">
-          {data.reviews && data.reviews.map((review, i) => {
-            return (
-              <div key={i} className="flex-1 items-center gap-5">
-                <div className="flex flex-col gap-1 py-2">
-                  {review.images && review.images.length > 0 ? (
-                    <ImageContainer images={review.images} />
-                  ) : null}
-                  <div className="flex justify-between">
-                    <p className="text-md font-normal">{review.title}</p>
-                    <p className="font-semibold text-gray-300">
-                      {formatDate(review.createdAt)}
-                    </p>
+          {data.reviews &&
+            data.reviews.map((review, i) => {
+              return (
+                <div key={i} className="flex-1 items-center gap-5">
+                  <div className="flex flex-col gap-1 py-2">
+                    {review.images && review.images.length > 0 ? (
+                      <ImageContainer images={review.images} />
+                    ) : null}
+                    <div className="flex justify-between">
+                      <p className="text-md font-normal">{review.title}</p>
+                      <p className="font-semibold text-gray-300">
+                        {formatDate(review.createdAt)}
+                      </p>
+                    </div>
+                    <p className="text-md font-light">{review.details}</p>
                   </div>
-                  <p className="text-md font-light">{review.details}</p>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       ) : (
         <div className="mt-20 flex items-center justify-center">
