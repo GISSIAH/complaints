@@ -47,7 +47,7 @@ export default function Search() {
       ) : null} */}
       {data != null ? (
         <div className="flex flex-col gap-4 divide-y p-2">
-          {data?.reviews.map((review, i) => {
+          {data.reviews && data.reviews.map((review, i) => {
             return (
               <div key={i} className="flex-1 items-center gap-5">
                 <div className="flex flex-col gap-1 py-2">
