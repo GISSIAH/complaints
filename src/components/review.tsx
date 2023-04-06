@@ -7,11 +7,9 @@ interface ReviewProps {
 }
 
 const ReviewItem: NextPage<ReviewProps> = ({ review }) => {
-
   return (
     <div className="flex-1 items-center gap-5">
       <div className="flex flex-col gap-1 py-2">
-        {review.images && review.images.length > 0 ? (<ImageContainer images={review.images} />) : null}
         <p className="text-lg font-semibold">{review.business.name}</p>
         <div className="flex justify-between">
           <p className="text-md font-normal">{review.title}</p>
@@ -20,6 +18,9 @@ const ReviewItem: NextPage<ReviewProps> = ({ review }) => {
           </p>
         </div>
         <p className="text-md font-light">{review.details}</p>
+        {review.images && review.images.length > 0 ? (
+          <ImageContainer images={review.images} />
+        ) : null}
       </div>
       {/* <div className="flex  text-center gap-4">
         <svg
@@ -115,8 +116,6 @@ export function formatDate(date: Date) {
       out = `${hours}h`;
     }
   } else {
-
-    
     out = `${minutes}m`;
   }
   return out;
