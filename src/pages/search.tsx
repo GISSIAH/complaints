@@ -44,7 +44,7 @@ export default function Search() {
           <p className="text-lg text-gray-400">User Rating : {data.rating}</p>
         </div>
       ) : null} */}
-      {data != null ? (
+      {data?.id != null ? (
         <div className="flex flex-col gap-4 divide-y p-2">
           {data.reviews && data.reviews.map((review, i) => {
             return (
