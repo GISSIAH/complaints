@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
-  
   return (
     <>
       <Head>
@@ -22,9 +21,16 @@ const Home: NextPage = () => {
           <button
             className="rounded-md border border-secondary px-3 py-1"
             onClick={() => {
-              signIn("google",{
-                callbackUrl:"http://localhost:3000/reviews"
-              });
+              if (process.env.NEXT_PUBLIC_CALLBACK_URL) {
+                signIn("google", {
+                  callbackUrl: process.env.NEXT_PUBLIC_CALLBACK_URL,
+                });
+              }
+              else{
+                signIn("google",{
+                  callbackUrl:"http://localhost:3000/reviews"
+                });
+              }
             }}
           >
             Login

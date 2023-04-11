@@ -30,6 +30,7 @@ const client = z.object({
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: z.string(),
   NEXT_PUBLIC_FIREBASE_APP_ID: z.string(),
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: z.string(),
+  NEXT_PUBLIC_CALLBACK_URL:z.string()
   
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
 });
@@ -57,6 +58,7 @@ const processEnv = {
     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   GOOGLE_CLIENT: process.env.GOOGLE_CLIENT,
   GOOGLE_SECRET: process.env.GOOGLE_SECRET,
+  NEXT_PUBLIC_CALLBACK_URL: process.env.NEXT_PUBLIC_CALLBACK_URL
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
