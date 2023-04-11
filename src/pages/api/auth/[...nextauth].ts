@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import NextAuth from "next-auth"
+import NextAuth, { type NextAuthOptions  } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import { env } from "~/env.mjs"
@@ -7,7 +6,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "~/server/db";
 //import { prisma } from "../../../server/db/client";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   callbacks: {
     session({ session, user }) {
       if (session.user) {

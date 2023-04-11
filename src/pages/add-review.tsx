@@ -32,30 +32,32 @@ export default function AddReview() {
   const reviewMutation = api.review.createOne.useMutation();
   const imageMutation = api.image.addOne.useMutation();
   const [voteCount, setVoteCount] = useState(0);
-  const {data} = useSession()
+  const { data } = useSession();
   const formik = useFormik({
     initialValues: {
       title: "",
       details: "",
       businessNme: "",
       voteCount: 0,
-      userId:""
+      userId: "",
     },
     onSubmit: (values) => {
-      if(data?.user.id){ 
-        values.userId = String(data?.user.id)
+      if (data?.user) {
+        if (data?.user.id) {
+          values.userId = String(data?.user.id);
+        }
       }
       values.businessNme = bname;
       values.voteCount = voteCount;
-      
+
       reviewMutation
         .mutateAsync(values)
         .then((res) => {
           //closeModal();
           if (selectedImages.length > 0) {
             uploadImages(selectedImages, res.id);
-          }else{
-            router.push("/")
+          } else {
+            router.push("/");
           }
         })
         .catch((err) => {
