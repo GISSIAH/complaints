@@ -35,9 +35,9 @@ const Profile: NextPage = () => {
     );
   } else {
     return (
-      <div className="mt-12 mb-12 flex flex-col gap-4 p-4">
+      <div className="mt-12 mb-12 flex flex-col items-center justify-center gap-4 p-4">
         <button
-          className="rounded-md border border-secondary px-3 py-1"
+          className="rounded-md bg-secondary text-white px-3 py-1 w-32"
           onClick={() => {
             if (process.env.NEXT_PUBLIC_CALLBACK_URL != "") {
               signIn("google", {
