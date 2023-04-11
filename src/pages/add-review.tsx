@@ -19,6 +19,7 @@ import {
   uploadBytesResumable,
   type UploadTaskSnapshot,
 } from "firebase/storage";
+import { useSession } from "next-auth/react";
 
 export default function AddReview() {
   const [imgSelected, setImgSelected] = useState(false);
@@ -31,17 +32,22 @@ export default function AddReview() {
   const reviewMutation = api.review.createOne.useMutation();
   const imageMutation = api.image.addOne.useMutation();
   const [voteCount, setVoteCount] = useState(0);
+  const {data} = useSession()
   const formik = useFormik({
     initialValues: {
       title: "",
       details: "",
       businessNme: "",
       voteCount: 0,
+      userId:""
     },
     onSubmit: (values) => {
-      
+      if(data?.user.id){ 
+        values.userId = String(data?.user.id)
+      }
       values.businessNme = bname;
       values.voteCount = voteCount;
+      
       reviewMutation
         .mutateAsync(values)
         .then((res) => {

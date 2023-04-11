@@ -8,12 +8,19 @@ import AddReview from "~/components/addReview";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import {SessionProvider} from "next-auth/react"
+import type { Session } from "next-auth";
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp: AppType<{ session: Session | null }> = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}) => {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <SessionProvider session={session}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </SessionProvider>
   );
 };
 
@@ -26,7 +33,9 @@ interface LayoutProps {
 const Layout: NextPage<LayoutProps> = ({ children }) => {
   const router = useRouter();
 
-  if (router.pathname === "/add-review") return <NoNav>{children}</NoNav>;
+  const noAuth = ["/","/add-review"]
+
+  if ( noAuth.includes(router.pathname)) return <NoNav>{children}</NoNav>;
   else return <FullNavigation>{children}</FullNavigation>;
 };
 

@@ -10,6 +10,7 @@ export const reviewRouter = createTRPCRouter({
         details: z.string(),
         businessNme: z.string(),
         voteCount: z.number(),
+        userId: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -24,7 +25,8 @@ export const reviewRouter = createTRPCRouter({
           title: input.title,
           details: input.details,
           businessId: business.id,
-          voteCount: input.voteCount
+          voteCount: input.voteCount,
+          userId: input.userId,
         };
         return ctx.prisma.review.create({ data: r });
       } else {
@@ -39,7 +41,8 @@ export const reviewRouter = createTRPCRouter({
           title: input.title,
           details: input.details,
           businessId: newBusiness.id,
-          voteCount : input.voteCount
+          voteCount: input.voteCount,
+          userId: input.userId,
         };
         return ctx.prisma.review.create({ data: r });
       }
@@ -76,13 +79,30 @@ export const reviewRouter = createTRPCRouter({
           rating: totalVotes / business?.reviews.length,
         };
         return ratedBusines;
-      }
-      else{
+      } else {
         const ratedBusines = {
           ...business,
           rating: 0,
         };
         return ratedBusines;
       }
+    }),
+
+  getUserReviews: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(({ input, ctx }) => {
+      return ctx.prisma.review.findMany({
+        where: {
+          userId: input.userId,
+        },
+        include: {
+          images: true,
+          business: true,
+        },
+      });
     }),
 });

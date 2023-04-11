@@ -7,6 +7,15 @@ import { z } from "zod";
 const server = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
+  NEXTAUTH_URL: z.preprocess(
+    // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
+    // Since NextAuth automatically uses the VERCEL_URL if present.
+    (str) => process.env.VERCEL_URL ?? str,
+    // VERCEL_URL doesnt include `https` so it cant be validated as a URL
+    process.env.VERCEL ? z.string() : z.string().url(),
+  ),
+  GOOGLE_CLIENT: z.string(),
+  GOOGLE_SECRET: z.string(),
 });
 
 /**
@@ -21,6 +30,7 @@ const client = z.object({
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: z.string(),
   NEXT_PUBLIC_FIREBASE_APP_ID: z.string(),
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: z.string(),
+  
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
 });
 
@@ -33,13 +43,20 @@ const client = z.object({
 const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
+  NEXTAUTH_URL:process.env.NEXTAUTH_URL,
   NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:
+    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:
+    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID:
+    process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  GOOGLE_CLIENT: process.env.GOOGLE_CLIENT,
+  GOOGLE_SECRET: process.env.GOOGLE_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
