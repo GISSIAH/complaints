@@ -96,7 +96,7 @@ const BottomBar: NextPage = () => {
               fill="none"
               viewBox="0 0 24 24"
               stroke-width="1.5"
-              stroke={`${router.pathname == "/" ? "#865DFF" : "currentColor"}`}
+              stroke={`${router.pathname == "/reviews" ? "#865DFF" : "currentColor"}`}
               className={`h-6 w-6`}
             >
               <path
@@ -155,7 +155,7 @@ const BottomBar: NextPage = () => {
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke={`${
-                router.pathname == "/some" ? "#865DFF" : "currentColor"
+                router.pathname == "/profile" ? "#865DFF" : "currentColor"
               }`}
               className="h-6 w-6"
             >
