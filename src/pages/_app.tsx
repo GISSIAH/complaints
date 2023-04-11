@@ -147,7 +147,7 @@ const BottomBar: NextPage = () => {
             </svg>
           </Link>
         </div>
-        <div className={`flex flex-col ${data ? "": "hidden"}`}>
+        <div className={`flex flex-col`}>
           <Link href="/profile">
             <svg
               xmlns="http://www.w3.org/2000/svg"
