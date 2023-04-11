@@ -8,7 +8,7 @@ import AddReview from "~/components/addReview";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import {SessionProvider} from "next-auth/react"
+import {SessionProvider, useSession} from "next-auth/react"
 import type { Session } from "next-auth";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -34,7 +34,7 @@ const Layout: NextPage<LayoutProps> = ({ children }) => {
   const router = useRouter();
 
   const noAuth = ["/","/add-review"]
-
+  
   if ( noAuth.includes(router.pathname)) return <NoNav>{children}</NoNav>;
   else return <FullNavigation>{children}</FullNavigation>;
 };
@@ -85,11 +85,12 @@ const TopBar: NextPage = () => {
 
 const BottomBar: NextPage = () => {
   const router = useRouter();
+  const {data} = useSession()
   return (
     <div className="fixed bottom-0 left-0 z-50 h-14 w-full border-t border-gray-200 bg-white py-2">
       <div className="flex justify-between gap-2 px-6">
         <div className="flex flex-col">
-          <Link href="/">
+          <Link href="/reviews">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -146,7 +147,7 @@ const BottomBar: NextPage = () => {
             </svg>
           </Link>
         </div>
-        <div className="flex flex-col">
+        <div className={`flex flex-col ${data ? "": "hidden"}`}>
           <Link href="/profile">
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -3,8 +3,16 @@ import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
+import { useEffect } from "react";
 const Home: NextPage = () => {
+  const router = useRouter();
+  const { data } = useSession();
+
+  useEffect(() => {
+    if (data) router.push("/reviews");
+  }, [data]);
+
+
   return (
     <>
       <Head>
@@ -21,14 +29,13 @@ const Home: NextPage = () => {
           <button
             className="rounded-md border border-secondary px-3 py-1"
             onClick={() => {
-              if (process.env.NEXT_PUBLIC_CALLBACK_URL) {
+              if (process.env.NEXT_PUBLIC_CALLBACK_URL != "") {
                 signIn("google", {
                   callbackUrl: process.env.NEXT_PUBLIC_CALLBACK_URL,
                 });
-              }
-              else{
-                signIn("google",{
-                  callbackUrl:"http://localhost:3000/reviews"
+              } else {
+                signIn("google", {
+                  callbackUrl: "http://localhost:3000/reviews",
                 });
               }
             }}
